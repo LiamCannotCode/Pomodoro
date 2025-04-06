@@ -5,6 +5,7 @@ let isRunning = false; // Flag to check if the timer is running
 let workDuration = 25 * 60; // Work duration in seconds (25 minutes)
 let breakDuration = 5 * 60; // Break duration in seconds (5 minutes)
 let currentDuration = workDuration; // Current duration set to work duration
+let totalDuration = workDuration; // Total duration for progress calculation
 
 // Helper function to pad numbers
 function pad(num) {
@@ -22,6 +23,18 @@ function formatTime(seconds) {
 function updateDisplay() {
   const timerDisplay = document.getElementById('timer');
   timerDisplay.textContent = formatTime(currentDuration);
+  updateProgressRing();
+}
+
+// Function to update the progress ring
+function updateProgressRing() {
+  const circle = document.querySelector('.progress-ring');
+  const radius = 45; // Radius of the circle
+  const circumference = 2 * Math.PI * radius; // Circumference of the circle
+  const progress = (currentDuration / totalDuration) * 100; // Calculate progress percentage
+  const offset = circumference - (progress / 100) * circumference; // Calculate offset
+  circle.style.strokeDasharray = `${circumference} ${circumference}`;
+  circle.style.strokeDashoffset = offset;
 }
 
 // Function to start the timer
@@ -36,10 +49,14 @@ function startTimer() {
         clearInterval(timer);
         isRunning = false;
         // Switch to break or reset timer
-        if (currentDuration === 0 && currentDuration === workDuration) {
+        if (currentDuration === 0 && totalDuration === workDuration) {
           currentDuration = breakDuration; // Switch to break
+          totalDuration = breakDuration; // Update total duration
+          document.getElementById('status').textContent = 'Break';
         } else {
           currentDuration = workDuration; // Reset to work duration
+          totalDuration = workDuration; // Update total duration
+          document.getElementById('status').textContent = 'Work';
         }
         updateDisplay();
       }
@@ -52,6 +69,8 @@ function resetTimer() {
   clearInterval(timer);
   isRunning = false;
   currentDuration = workDuration; // Reset to work duration
+  totalDuration = workDuration; // Reset total duration
+  document.getElementById('status').textContent = 'Work';
   updateDisplay();
 }
 
