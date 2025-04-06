@@ -77,16 +77,17 @@ body {
   }
   
   button {
-    background-color: #ff4757; /* Button color */
-    color: #ffffff; /* Button text color */
+    background-color: #ffffff; /* White background */
+    color: #121212; /* Text color matches the background */
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 1.5em;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
   }
   
   button:hover {
-    background-color: #ff6b81; /* Lighter shade on hover */
+    background-color: #f0f0f0; /* Slightly lighter shade on hover */
+    color: #121212; /* Keep text color consistent */
   }
