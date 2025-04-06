@@ -35,6 +35,13 @@ function updateProgressRing() {
   const offset = circumference - (progress / 100) * circumference; // Calculate offset
   circle.style.strokeDasharray = `${circumference} ${circumference}`;
   circle.style.strokeDashoffset = offset;
+
+  // Change the color of the progress ring based on the mode
+  if (totalDuration === workDuration) {
+    circle.style.stroke = "#ff4757"; // Red for work
+  } else {
+    circle.style.stroke = "#2ecc71"; // Green for break
+  }
 }
 
 // Function to start the timer
@@ -52,11 +59,9 @@ function startTimer() {
         if (currentDuration === 0 && totalDuration === workDuration) {
           currentDuration = breakDuration; // Switch to break
           totalDuration = breakDuration; // Update total duration
-          document.getElementById('status').textContent = 'Break';
         } else {
           currentDuration = workDuration; // Reset to work duration
           totalDuration = workDuration; // Update total duration
-          document.getElementById('status').textContent = 'Work';
         }
         updateDisplay();
       }
@@ -70,7 +75,6 @@ function resetTimer() {
   isRunning = false;
   currentDuration = workDuration; // Reset to work duration
   totalDuration = workDuration; // Reset total duration
-  document.getElementById('status').textContent = 'Work';
   updateDisplay();
 }
 
