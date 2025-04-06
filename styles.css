@@ -1,0 +1,92 @@
+body {
+    background-color: #121212;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    padding: 0 10%; /* Add padding to keep content 10% away from screen edges */
+  }
+  
+  .display {
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .circle-container {
+    position: relative;
+    width: calc(80vw); /* Circle width is 80% of the viewport width */
+    height: calc(80vw); /* Circle height matches the width for a perfect circle */
+    max-width: 400px; /* Set a maximum size for the circle */
+    max-height: 400px; /* Set a maximum size for the circle */
+    margin-bottom: 20px;
+  }
+  
+  .circle-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 90%; /* Ensure content stays 5% away from the inner side of the ring */
+  }
+  
+  .circle {
+    transform: rotate(-90deg); /* Rotate 90 degrees to flip the progress direction */
+  }
+  
+  .progress-ring {
+    fill: none;
+    stroke: #ffffff; /* Change progress color to white */
+    stroke-width: 10;
+    stroke-linecap: round; /* Rounded ends for the progress */
+    stroke-dasharray: 314; /* Total circumference of the circle (2 * π * r) */
+    stroke-dashoffset: 314; /* Start with no progress (hidden) */
+    transition: stroke-dashoffset 0.5s ease; /* Smooth progress animation */
+  }
+  
+  .background-ring {
+    fill: none;
+    stroke: #121212; /* Match the background color */
+    stroke-width: 10;
+  }
+  
+  #current-time {
+    font-size: 4.5em; /* Increase font size */
+    font-weight: bold; /* Make the text thicker */
+    margin: 0;
+  }
+  
+  #timer {
+    font-size: 4.5em; /* Increase font size */
+    font-weight: bold; /* Make the text thicker */
+    margin: 0;
+  }
+  
+  #period {
+    font-size: 3em; /* Adjust size for AM/PM */
+    font-weight: bold; /* Make it thicker */
+    margin-top: 5px;
+  }
+  
+  #mode {
+    display: none; /* Hide the mode text */
+  }
+  
+  button {
+    background-color: #ff4757; /* Button color */
+    color: #ffffff; /* Button text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #ff6b81; /* Lighter shade on hover */
+  }
