@@ -110,22 +110,6 @@ function updateProgressRing(type) {
   }
 }
 
-// Function to start the timer
-function startTimer() {
-  if (!isRunning) {
-    isRunning = true;
-    timer = setInterval(updateDisplay, 1000);
-    updateDisplay();
-  }
-}
-
-// Event listeners for buttons
-document.getElementById("start-button").addEventListener("click", startTimer);
-document.getElementById("reset-button").addEventListener("click", () => {
-  clearInterval(timer);
-  isRunning = false;
-  updateDisplay();
-});
-
-// Initial display update
+// Start the timer automatically
+timer = setInterval(updateDisplay, 1000);
 updateDisplay();
