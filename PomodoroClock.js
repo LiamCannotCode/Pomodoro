@@ -1,52 +1,45 @@
 // filepath: d:\application_folder\PomodoroClock\pomodoro.js
 
 let timer; // Variable to hold the timer interval
-let isRunning = false; // Flag to check if the timer is running
 let currentDuration = 0; // Current duration in seconds
 let totalDuration = 0; // Total duration for progress calculation
-let isWorkPeriod = true; // Flag to track if it's a work period
 
-// Define the schedule
-const schedule = [
-  { start: "08:00", end: "08:50", type: "work" },
-  { start: "08:50", end: "09:00", type: "break" },
-  { start: "09:00", end: "09:50", type: "work" },
-  { start: "09:50", end: "10:00", type: "break" },
-  { start: "10:00", end: "10:50", type: "work" },
-  { start: "10:50", end: "11:00", type: "break" },
-  { start: "11:00", end: "11:50", type: "work" },
-  { start: "11:50", end: "12:30", type: "break" },
-  { start: "12:30", end: "12:55", type: "work" },
-  { start: "12:55", end: "13:00", type: "break" },
-  { start: "13:00", end: "13:25", type: "work" },
-  { start: "13:25", end: "13:30", type: "break" },
-  { start: "13:30", end: "13:55", type: "work" },
-  { start: "13:55", end: "14:00", type: "break" },
-  { start: "14:00", end: "14:25", type: "work" },
-  { start: "14:25", end: "14:30", type: "break" },
-  { start: "14:30", end: "14:55", type: "work" },
-  { start: "14:55", end: "15:00", type: "break" },
-  { start: "15:00", end: "15:25", type: "work" },
-  { start: "15:25", end: "15:30", type: "break" },
-  { start: "15:30", end: "15:55", type: "work" },
-  { start: "15:55", end: "16:00", type: "break" },
-  { start: "16:00", end: "16:25", type: "work" },
-  { start: "16:25", end: "16:30", type: "break" },
-  { start: "16:30", end: "16:55", type: "work" },
-  { start: "16:55", end: "17:00", type: "break" },
-  { start: "17:00", end: "17:25", type: "work" },
-  { start: "17:25", end: "17:30", type: "break" },
-  { start: "17:30", end: "17:55", type: "work" },
-  { start: "17:55", end: "18:00", type: "break" },
-  { start: "18:00", end: "18:25", type: "work" },
-  { start: "18:25", end: "18:30", type: "break" },
-  { start: "18:30", end: "18:55", type: "work" },
-  { start: "18:55", end: "19:00", type: "break" },
-  { start: "19:00", end: "19:25", type: "work" },
-  { start: "19:25", end: "19:30", type: "break" },
-  { start: "19:30", end: "19:55", type: "work" },
-  { start: "19:55", end: "20:00", type: "break" },
-];
+// Function to generate the schedule dynamically
+function generateSchedule() {
+  const schedule = [];
+  const workDuration = 50 * 60; // 50 minutes in seconds
+  const shortBreakDuration = 10 * 60; // 10 minutes in seconds
+  const longBreakDuration = 40 * 60; // 40 minutes in seconds
+
+  let currentTime = new Date("2025-04-07T08:00:00"); // Start at 8:00 AM
+  const endTime = new Date("2025-04-07T20:00:00"); // End at 8:00 PM
+
+  let workCount = 0;
+
+  while (currentTime < endTime) {
+    // Add a work period
+    const workEnd = new Date(currentTime.getTime() + workDuration * 1000);
+    schedule.push({ start: formatTime(currentTime), end: formatTime(workEnd), type: "work" });
+    currentTime = workEnd;
+
+    workCount++;
+
+    // Determine break duration
+    const breakDuration = workCount % 4 === 0 ? longBreakDuration : shortBreakDuration;
+    const breakEnd = new Date(currentTime.getTime() + breakDuration * 1000);
+
+    // Add a break period
+    if (breakEnd <= endTime) {
+      schedule.push({ start: formatTime(currentTime), end: formatTime(breakEnd), type: "break" });
+      currentTime = breakEnd;
+    }
+  }
+
+  return schedule;
+}
+
+// Generate the schedule
+const schedule = generateSchedule();
 
 // Helper function to format time as HH:mm
 function formatTime(date) {
@@ -65,7 +58,6 @@ function updateDisplay() {
   const segment = getCurrentSegment();
   if (!segment) {
     clearInterval(timer);
-    isRunning = false;
     return;
   }
 
