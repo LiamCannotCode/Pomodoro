@@ -5,9 +5,9 @@ let currentDuration = 0; // Current duration in seconds
 let totalDuration = 0; // Total duration for progress calculation
 
 // Load sound files
-const startOfShortBreakSound = new Audio("sounds/StartOfShortBreak.mp3");
-const startOfLongBreakSound = new Audio("sounds/StartOfLongBreak.mp3");
-const endOfBreakSound = new Audio("sounds/EndOfBrake.mp3");
+const startOfShortBreakSound = new Audio("../sounds/StartOfShortBreak.mp3");
+const startOfLongBreakSound = new Audio("../sounds/StartOfLongBreak.mp3");
+const endOfBreakSound = new Audio("../sounds/EndOfBrake.mp3");
 
 let previousSegmentType = null; // Track the previous segment type
 
@@ -107,12 +107,16 @@ function updateDisplay() {
   timerDisplay.textContent = formatTimeDisplay(currentDuration);
   updateProgressRing(segment.type);
 
+  // Debugging logs
+  console.log("Segment type:", segment.type);
+  console.log("Break duration:", totalDuration / 60);
+  console.log("Previous segment type:", previousSegmentType);
+
   // Play sound when the segment changes
   if (segment.type !== previousSegmentType) {
     if (segment.type === "work") {
       endOfBreakSound.play(); // Play sound when a work period starts
     } else if (segment.type === "break") {
-      // Determine if it's a short or long break
       const breakDuration = totalDuration / 60; // Convert seconds to minutes
       if (breakDuration === 10 || breakDuration === 5) {
         startOfShortBreakSound.play(); // Play short break sound
