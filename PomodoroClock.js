@@ -37,10 +37,10 @@ function updateProgressRing() {
   circle.style.strokeDashoffset = offset;
 
   // Change the color of the progress ring based on the mode
-  if (totalDuration === workDuration) {
+  if (isRunning && totalDuration === workDuration) {
     circle.style.stroke = "#ff4757"; // Red for work
   } else {
-    circle.style.stroke = "#2ecc71"; // Green for break
+    circle.style.stroke = "#ffffff"; // White for break or when inactive
   }
 }
 
@@ -76,6 +76,10 @@ function resetTimer() {
   currentDuration = workDuration; // Reset to work duration
   totalDuration = workDuration; // Reset total duration
   updateDisplay();
+
+  // Set the ring color to white when the timer is reset
+  const circle = document.querySelector('.progress-ring');
+  circle.style.stroke = "#ffffff"; // White color
 }
 
 // Event listeners for buttons

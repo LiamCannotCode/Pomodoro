@@ -40,12 +40,12 @@ body {
   
   .progress-ring {
     fill: none;
-    stroke: #ffffff; /* Change progress color to white */
+    stroke: #ffffff; /* Default color is white */
     stroke-width: 10;
     stroke-linecap: round; /* Rounded ends for the progress */
     stroke-dasharray: 314; /* Total circumference of the circle (2 * π * r) */
     stroke-dashoffset: 314; /* Start with no progress (hidden) */
-    transition: stroke-dashoffset 0.5s ease; /* Smooth progress animation */
+    transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease; /* Smooth progress and color animation */
   }
   
   .background-ring {
