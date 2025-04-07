@@ -7,16 +7,23 @@ let totalDuration = 0; // Total duration for progress calculation
 // Function to generate the schedule dynamically
 function generateSchedule() {
   const schedule = [];
-  const workDuration = 50 * 60; // 50 minutes in seconds
+  const firstWorkDuration = 50 * 60; // 50 minutes in seconds
+  const subsequentWorkDuration = 25 * 60; // 25 minutes in seconds
   const shortBreakDuration = 10 * 60; // 10 minutes in seconds
   const longBreakDuration = 40 * 60; // 40 minutes in seconds
+  const subsequentShortBreakDuration = 5 * 60; // 5 minutes in seconds
+  const subsequentLongBreakDuration = 20 * 60; // 20 minutes in seconds
 
   let currentTime = new Date("2025-04-07T08:00:00"); // Start at 8:00 AM
   const endTime = new Date("2025-04-07T20:00:00"); // End at 8:00 PM
 
   let workCount = 0;
+  let breakCount = 0;
 
   while (currentTime < endTime) {
+    // Determine work duration
+    const workDuration = workCount < 4 ? firstWorkDuration : subsequentWorkDuration;
+
     // Add a work period
     const workEnd = new Date(currentTime.getTime() + workDuration * 1000);
     schedule.push({ start: formatTime(currentTime), end: formatTime(workEnd), type: "work" });
@@ -25,7 +32,16 @@ function generateSchedule() {
     workCount++;
 
     // Determine break duration
-    const breakDuration = workCount % 4 === 0 ? longBreakDuration : shortBreakDuration;
+    let breakDuration;
+    if (workCount <= 4) {
+      // First 4 breaks
+      breakDuration = (workCount % 4 === 0) ? longBreakDuration : shortBreakDuration;
+    } else {
+      // Subsequent breaks
+      breakCount++;
+      breakDuration = (breakCount % 4 === 0) ? subsequentLongBreakDuration : subsequentShortBreakDuration;
+    }
+
     const breakEnd = new Date(currentTime.getTime() + breakDuration * 1000);
 
     // Add a break period
