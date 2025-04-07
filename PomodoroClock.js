@@ -105,7 +105,15 @@ function updateProgressRing(type) {
   const radius = 45; // Radius of the circle
   const circumference = 2 * Math.PI * radius; // Circumference of the circle
 
-  const progress = (currentDuration / totalDuration) * 100;
+  let progress;
+  if (type === "work") {
+    // Counterclockwise for work: progress decreases from 100% to 0%
+    progress = (currentDuration / totalDuration) * 100;
+  } else {
+    // Clockwise for break: progress increases from 0% to 100%
+    progress = ((totalDuration - currentDuration) / totalDuration) * 100;
+  }
+
   const offset = circumference - (progress / 100) * circumference; // Calculate offset
   circle.style.strokeDasharray = `${circumference} ${circumference}`;
   circle.style.strokeDashoffset = offset;
