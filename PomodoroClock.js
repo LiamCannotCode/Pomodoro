@@ -9,27 +9,39 @@ function generateSchedule() {
   const schedule = [];
   const firstWorkDuration = 50 * 60; // 50 minutes in seconds
   const subsequentWorkDuration = 25 * 60; // 25 minutes in seconds
+  const extendedLastWorkDuration = 30 * 60; // 30 minutes for the last Pomodoro
   const shortBreakDuration = 10 * 60; // 10 minutes in seconds
   const longBreakDuration = 40 * 60; // 40 minutes in seconds
   const subsequentShortBreakDuration = 5 * 60; // 5 minutes in seconds
   const subsequentLongBreakDuration = 20 * 60; // 20 minutes in seconds
 
   let currentTime = new Date("2025-04-07T08:00:00"); // Start at 8:00 AM
-  const endTime = new Date("2025-04-07T20:00:00"); // End at 8:00 PM
+  const endTime = new Date("2025-04-07T19:00:00"); // End at 7:00 PM
 
   let workCount = 0;
   let breakCount = 0;
 
   while (currentTime < endTime) {
     // Determine work duration
-    const workDuration = workCount < 4 ? firstWorkDuration : subsequentWorkDuration;
+    let workDuration;
+    if (workCount < 4) {
+      workDuration = firstWorkDuration; // First 4 Pomodoros are 50 minutes
+    } else if (workCount === 15) {
+      workDuration = extendedLastWorkDuration; // Extend the last Pomodoro to 30 minutes
+    } else {
+      workDuration = subsequentWorkDuration; // Subsequent Pomodoros are 25 minutes
+    }
 
     // Add a work period
     const workEnd = new Date(currentTime.getTime() + workDuration * 1000);
+    if (workEnd > endTime) break; // Stop if the work period exceeds the end time
     schedule.push({ start: formatTime(currentTime), end: formatTime(workEnd), type: "work" });
     currentTime = workEnd;
 
     workCount++;
+
+    // Stop adding breaks after the last Pomodoro
+    if (workCount === 16) break;
 
     // Determine break duration
     let breakDuration;
@@ -48,6 +60,8 @@ function generateSchedule() {
     if (breakEnd <= endTime) {
       schedule.push({ start: formatTime(currentTime), end: formatTime(breakEnd), type: "break" });
       currentTime = breakEnd;
+    } else {
+      break; // Stop if the break period exceeds the end time
     }
   }
 
