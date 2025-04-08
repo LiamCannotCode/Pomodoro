@@ -98,8 +98,15 @@ function updateDisplay() {
 
   const now = new Date();
   const segmentEnd = segment.end;
+
+  // Calculate remaining time based on the difference between now and segmentEnd
   currentDuration = Math.floor((segmentEnd - now) / 1000); // Remaining time in seconds
   totalDuration = Math.floor((segment.end - segment.start) / 1000); // Total duration in seconds
+
+  // Ensure the timer doesn't display negative values
+  if (currentDuration < 0) {
+    currentDuration = 0;
+  }
 
   const timerDisplay = document.getElementById("timer");
   timerDisplay.textContent = formatTimeDisplay(currentDuration);
