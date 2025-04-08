@@ -16,38 +16,38 @@ function generateSchedule() {
   const schedule = [];
   const firstWorkDuration = 50 * 60; // 50 minutes in seconds
   const shortBreakDuration = 10 * 60; // 10 minutes in seconds
-  const longBreakDuration = 30 * 60; // 30 minutes in seconds
+  const longBreakDuration = 45 * 60; // 45 minutes in seconds
   const secondPhaseWorkDuration = 25 * 60; // 25 minutes in seconds
   const secondPhaseBreakDuration = 5 * 60; // 5 minutes in seconds
 
   let currentTime = new Date();
   currentTime.setHours(8, 0, 0, 0); // Start at 8:00 AM
 
-  // First Phase: 8 cycles of 50-10, with 4th and 8th breaks being 30 minutes
-  for (let i = 1; i <= 8; i++) {
+  // First Phase: 7 cycles of 50-10, with a long break after the 4th Pomodoro
+  for (let i = 1; i <= 7; i++) {
     // Add a work period
     const workEnd = new Date(currentTime.getTime() + firstWorkDuration * 1000);
     schedule.push({ start: new Date(currentTime), end: new Date(workEnd), type: "work" });
     currentTime = workEnd;
 
     // Add a break period
-    if (i < 8) { // No break after the last work period in this phase
-      const breakDuration = (i % 4 === 0) ? longBreakDuration : shortBreakDuration;
+    if (i < 7) { // No break after the last work period in this phase
+      const breakDuration = (i === 4) ? longBreakDuration : shortBreakDuration;
       const breakEnd = new Date(currentTime.getTime() + breakDuration * 1000);
       schedule.push({ start: new Date(currentTime), end: new Date(breakEnd), type: "break" });
       currentTime = breakEnd;
     }
   }
 
-  // Second Phase: 6 cycles of 25-5
-  for (let i = 1; i <= 6; i++) {
+  // Second Phase: 8 cycles of 25-5
+  for (let i = 1; i <= 8; i++) {
     // Add a work period
     const workEnd = new Date(currentTime.getTime() + secondPhaseWorkDuration * 1000);
     schedule.push({ start: new Date(currentTime), end: new Date(workEnd), type: "work" });
     currentTime = workEnd;
 
     // Add a break period
-    if (i < 6) { // No break after the last work period in this phase
+    if (i < 8) { // No break after the last work period in this phase
       const breakEnd = new Date(currentTime.getTime() + secondPhaseBreakDuration * 1000);
       schedule.push({ start: new Date(currentTime), end: new Date(breakEnd), type: "break" });
       currentTime = breakEnd;
@@ -100,7 +100,7 @@ function updateDisplay() {
       const breakDuration = totalDuration / 60; // Convert seconds to minutes
       if (breakDuration === 10 || breakDuration === 5) {
         startOfShortBreakSound.play(); // Play short break sound
-      } else if (breakDuration === 30) {
+      } else if (breakDuration === 45) {
         startOfLongBreakSound.play(); // Play long break sound
       }
     }
