@@ -15,62 +15,42 @@ let previousSegmentType = null; // Track the previous segment type
 function generateSchedule() {
   const schedule = [];
   const firstWorkDuration = 50 * 60; // 50 minutes in seconds
-  const midWorkDuration = 30 * 60; // 30 minutes in seconds
-  const lastWorkDuration = 20 * 60; // 20 minutes for Pomodoros 13 to 17
   const shortBreakDuration = 10 * 60; // 10 minutes in seconds
-  const longBreakDuration = 40 * 60; // 40 minutes in seconds
-  const subsequentShortBreakDuration = 5 * 60; // 5 minutes in seconds
-  const subsequentLongBreakDuration = 20 * 60; // 20 minutes in seconds
+  const longBreakDuration = 30 * 60; // 30 minutes in seconds
+  const secondPhaseWorkDuration = 25 * 60; // 25 minutes in seconds
+  const secondPhaseBreakDuration = 5 * 60; // 5 minutes in seconds
 
   let currentTime = new Date();
   currentTime.setHours(8, 0, 0, 0); // Start at 8:00 AM
-  const endTime = new Date();
-  endTime.setHours(19, 0, 0, 0); // End at 7:00 PM
 
-  let workCount = 0;
-  let breakCount = 0;
-
-  while (currentTime < endTime) {
-    // Determine work duration
-    let workDuration;
-    if (workCount < 4) {
-      workDuration = firstWorkDuration; // First 4 Pomodoros are 50 minutes
-    } else if (workCount >= 4 && workCount < 12) {
-      workDuration = midWorkDuration; // Pomodoros 5 to 12 are 30 minutes
-    } else {
-      workDuration = lastWorkDuration; // Pomodoros 13 to 17 are 20 minutes
-    }
-
+  // First Phase: 8 cycles of 50-10, with 4th and 8th breaks being 30 minutes
+  for (let i = 1; i <= 8; i++) {
     // Add a work period
-    const workEnd = new Date(currentTime.getTime() + workDuration * 1000);
-    if (workEnd > endTime) break; // Stop if the work period exceeds the end time
+    const workEnd = new Date(currentTime.getTime() + firstWorkDuration * 1000);
     schedule.push({ start: new Date(currentTime), end: new Date(workEnd), type: "work" });
     currentTime = workEnd;
 
-    workCount++;
-
-    // Stop adding breaks after the last Pomodoro
-    if (workCount === 17) break;
-
-    // Determine break duration
-    let breakDuration;
-    if (workCount <= 4) {
-      // First 4 breaks
-      breakDuration = (workCount % 4 === 0) ? longBreakDuration : shortBreakDuration;
-    } else {
-      // Subsequent breaks
-      breakCount++;
-      breakDuration = (breakCount % 4 === 0) ? subsequentLongBreakDuration : subsequentShortBreakDuration;
-    }
-
-    const breakEnd = new Date(currentTime.getTime() + breakDuration * 1000);
-
     // Add a break period
-    if (breakEnd <= endTime) {
+    if (i < 8) { // No break after the last work period in this phase
+      const breakDuration = (i % 4 === 0) ? longBreakDuration : shortBreakDuration;
+      const breakEnd = new Date(currentTime.getTime() + breakDuration * 1000);
       schedule.push({ start: new Date(currentTime), end: new Date(breakEnd), type: "break" });
       currentTime = breakEnd;
-    } else {
-      break; // Stop if the break period exceeds the end time
+    }
+  }
+
+  // Second Phase: 6 cycles of 25-5
+  for (let i = 1; i <= 6; i++) {
+    // Add a work period
+    const workEnd = new Date(currentTime.getTime() + secondPhaseWorkDuration * 1000);
+    schedule.push({ start: new Date(currentTime), end: new Date(workEnd), type: "work" });
+    currentTime = workEnd;
+
+    // Add a break period
+    if (i < 6) { // No break after the last work period in this phase
+      const breakEnd = new Date(currentTime.getTime() + secondPhaseBreakDuration * 1000);
+      schedule.push({ start: new Date(currentTime), end: new Date(breakEnd), type: "break" });
+      currentTime = breakEnd;
     }
   }
 
@@ -120,7 +100,7 @@ function updateDisplay() {
       const breakDuration = totalDuration / 60; // Convert seconds to minutes
       if (breakDuration === 10 || breakDuration === 5) {
         startOfShortBreakSound.play(); // Play short break sound
-      } else if (breakDuration === 40 || breakDuration === 20) {
+      } else if (breakDuration === 30) {
         startOfLongBreakSound.play(); // Play long break sound
       }
     }
