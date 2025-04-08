@@ -91,3 +91,36 @@ body {
     background-color: #f0f0f0; /* Slightly lighter shade on hover */
     color: #121212; /* Keep text color consistent */
   }
+
+  .dots-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px; /* Space between dots */
+  }
+
+  .dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #ffffff; /* Default color is white */
+    transition: background-color 0.3s ease;
+  }
+
+  .dot.active {
+    animation: throbbing 1s infinite; /* Throbbing animation for active Pomodoro */
+  }
+
+  .dot.completed {
+    background-color: #ff4757; /* Red for completed Pomodoros */
+  }
+
+  @keyframes throbbing {
+    0%, 100% {
+      background-color: #ffffff; /* White */
+    }
+    50% {
+      background-color: #ff4757; /* Red */
+    }
+  }

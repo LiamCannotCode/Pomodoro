@@ -60,6 +60,49 @@ function generateSchedule() {
 // Generate the schedule
 const schedule = generateSchedule();
 
+// Function to create dots for the Pomodoro schedule
+function createDots() {
+  const dotsContainer = document.querySelector(".dots-container");
+  dotsContainer.innerHTML = ""; // Clear any existing dots
+
+  // Create one dot for each work segment in the schedule
+  schedule.forEach((segment, index) => {
+    if (segment.type === "work") { // Only create dots for work periods
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      dot.dataset.index = index; // Store the index for reference
+      dotsContainer.appendChild(dot);
+    }
+  });
+}
+
+// Function to update the dots based on the current segment
+function updateDots() {
+  const now = new Date();
+
+  schedule.forEach((segment, index) => {
+    const dot = document.querySelector(`.dot[data-index="${index}"]`);
+    if (!dot) return;
+
+    if (now >= segment.end) {
+      // Pomodoro has been completed
+      dot.classList.remove("active");
+      dot.classList.add("completed");
+    } else if (now >= segment.start && now < segment.end) {
+      // Pomodoro is currently active
+      dot.classList.add("active");
+      dot.classList.remove("completed");
+    } else {
+      // Pomodoro has not started yet
+      dot.classList.remove("active");
+      dot.classList.remove("completed");
+    }
+  });
+}
+
+// Call createDots after generating the schedule
+createDots();
+
 // Function to get the current segment from the schedule
 function getCurrentSegment() {
   const now = new Date();
@@ -91,6 +134,9 @@ function updateDisplay() {
   const timerDisplay = document.getElementById("timer");
   timerDisplay.textContent = formatTimeDisplay(currentDuration);
   updateProgressRing(segment.type);
+
+  // Update the dots
+  updateDots();
 
   // Play sound when the segment changes
   if (segment.type !== previousSegmentType) {
