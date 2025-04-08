@@ -22,8 +22,10 @@ function generateSchedule() {
   const subsequentShortBreakDuration = 5 * 60; // 5 minutes in seconds
   const subsequentLongBreakDuration = 20 * 60; // 20 minutes in seconds
 
-  let currentTime = new Date("2025-04-07T08:00:00"); // Start at 8:00 AM
-  const endTime = new Date("2025-04-07T19:00:00"); // End at 7:00 PM
+  let currentTime = new Date();
+  currentTime.setHours(8, 0, 0, 0); // Start at 8:00 AM
+  const endTime = new Date();
+  endTime.setHours(19, 0, 0, 0); // End at 7:00 PM
 
   let workCount = 0;
   let breakCount = 0;
@@ -42,7 +44,7 @@ function generateSchedule() {
     // Add a work period
     const workEnd = new Date(currentTime.getTime() + workDuration * 1000);
     if (workEnd > endTime) break; // Stop if the work period exceeds the end time
-    schedule.push({ start: formatTime(currentTime), end: formatTime(workEnd), type: "work" });
+    schedule.push({ start: new Date(currentTime), end: new Date(workEnd), type: "work" });
     currentTime = workEnd;
 
     workCount++;
@@ -65,7 +67,7 @@ function generateSchedule() {
 
     // Add a break period
     if (breakEnd <= endTime) {
-      schedule.push({ start: formatTime(currentTime), end: formatTime(breakEnd), type: "break" });
+      schedule.push({ start: new Date(currentTime), end: new Date(breakEnd), type: "break" });
       currentTime = breakEnd;
     } else {
       break; // Stop if the break period exceeds the end time
@@ -78,39 +80,30 @@ function generateSchedule() {
 // Generate the schedule
 const schedule = generateSchedule();
 
-// Helper function to format time as HH:mm
-function formatTime(date) {
-  return date.toTimeString().slice(0, 5);
-}
-
 // Function to get the current segment from the schedule
 function getCurrentSegment() {
   const now = new Date();
-  const currentTime = formatTime(now);
-  return schedule.find((segment) => currentTime >= segment.start && currentTime < segment.end);
+  return schedule.find((segment) => now >= segment.start && now < segment.end);
 }
 
 // Function to update the timer display
 function updateDisplay() {
   const segment = getCurrentSegment();
   if (!segment) {
+    // If no segment is found, clear the timer and display a message
     clearInterval(timer);
+    document.getElementById("timer").textContent = "No Active Timer";
     return;
   }
 
   const now = new Date();
-  const segmentEnd = new Date(`2025-04-07T${segment.end}:00`);
+  const segmentEnd = segment.end;
   currentDuration = Math.floor((segmentEnd - now) / 1000); // Remaining time in seconds
-  totalDuration = Math.floor((new Date(`2025-04-07T${segment.end}:00`) - new Date(`2025-04-07T${segment.start}:00`)) / 1000);
+  totalDuration = Math.floor((segment.end - segment.start) / 1000); // Total duration in seconds
 
   const timerDisplay = document.getElementById("timer");
   timerDisplay.textContent = formatTimeDisplay(currentDuration);
   updateProgressRing(segment.type);
-
-  // Debugging logs
-  console.log("Segment type:", segment.type);
-  console.log("Break duration:", totalDuration / 60);
-  console.log("Previous segment type:", previousSegmentType);
 
   // Play sound when the segment changes
   if (segment.type !== previousSegmentType) {
