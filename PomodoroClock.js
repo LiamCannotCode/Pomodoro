@@ -98,6 +98,16 @@ function updateDots() {
       dot.classList.remove("completed");
     }
   });
+
+  // Ensure the last dot is marked as completed when the timer ends
+  const lastSegment = schedule[schedule.length - 1];
+  if (lastSegment && new Date() >= lastSegment.end) {
+    const lastDot = document.querySelector(".dot:last-child");
+    if (lastDot) {
+      lastDot.classList.remove("active");
+      lastDot.classList.add("completed");
+    }
+  }
 }
 
 // Call createDots after generating the schedule
