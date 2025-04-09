@@ -4,10 +4,15 @@ let timer; // Variable to hold the timer interval
 let currentDuration = 0; // Current duration in seconds
 let totalDuration = 0; // Total duration for progress calculation
 
-// Load sound files
+// Load sound files with error handling
 const startOfShortBreakSound = new Audio("../sounds/StartOfShortBreak.mp3");
+startOfShortBreakSound.onerror = () => console.error("Failed to load StartOfShortBreak.mp3");
+
 const startOfLongBreakSound = new Audio("../sounds/StartOfLongBreak.mp3");
+startOfLongBreakSound.onerror = () => console.error("Failed to load StartOfLongBreak.mp3");
+
 const endOfBreakSound = new Audio("../sounds/EndOfBrake.mp3");
+endOfBreakSound.onerror = () => console.error("Failed to load EndOfBrake.mp3");
 
 let previousSegmentType = null; // Track the previous segment type
 
