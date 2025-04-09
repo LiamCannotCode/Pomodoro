@@ -113,10 +113,17 @@ function getCurrentSegment() {
 function updateDisplay() {
   const segment = getCurrentSegment();
   if (!segment) {
-    // If no segment is found, clear the timer and display a message
+    // If no segment is found, clear the timer and stop the last dot from blinking
     clearInterval(timer);
-    document.getElementById("timer").textContent = "No Active Timer";
-    return;
+
+    // Ensure the last dot is marked as completed
+    const lastDot = document.querySelector(".dot:last-child");
+    if (lastDot) {
+      lastDot.classList.remove("active");
+      lastDot.classList.add("completed");
+    }
+
+    return; // Do not display any additional text
   }
 
   const now = new Date();
